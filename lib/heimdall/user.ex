@@ -24,7 +24,7 @@ defmodule Heimdall.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:first_name, :last_name, :password, :code])
-    |> validate_required([:first_name, :last_name, :password, :code])
+    |> validate_required([:first_name, :last_name, :password, :code, :role_id])
     |> unique_constraint(:code)
   end
 end

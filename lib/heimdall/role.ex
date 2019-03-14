@@ -14,5 +14,6 @@ defmodule Heimdall.Role do
     role
     |> cast(attrs, [:name, :permissions])
     |> validate_required([:name, :permissions])
+    |> unique_constraint(:name)
   end
 end
