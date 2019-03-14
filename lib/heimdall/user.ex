@@ -1,7 +1,7 @@
 defmodule Heimdall.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Heimdall.{User, Role, DoorUser}
+  alias Heimdall.{User, Role, DoorUser, Role}
 
   schema "users" do
     field(:code, :string)
@@ -19,6 +19,10 @@ defmodule Heimdall.User do
 
     timestamps()
   end
+
+  @spec get_permissions(integer() | User.t()) :: [String.t()]
+  def get_permissions(%User{id: id}), do: Role.list_permissions(id)
+  def get_permissions(id) when is_integer(id), do: Role.list_permissions(id)
 
   @doc false
   def changeset(user, attrs) do
