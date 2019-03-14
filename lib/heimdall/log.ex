@@ -1,12 +1,14 @@
 defmodule Heimdall.Log do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Heimdall.{User, Door}
 
   schema "logs" do
     field(:access_granted, :boolean, default: false)
     field(:date_logged, :utc_datetime)
-    field(:door_id, :id)
-    field(:user_id, :id)
+
+    belongs_to(:user, User)
+    belongs_to(:door, Door)
 
     timestamps()
   end

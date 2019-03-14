@@ -1,14 +1,24 @@
 defmodule Heimdall.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Heimdall.{User, Role, DoorUsers, DoorOwners}
 
   schema "users" do
     field(:code, :string)
     field(:first_name, :string)
     field(:last_name, :string)
     field(:password, :string)
-    field(:role_id, :id)
-    field(:created_by_id, :id)
+
+    belongs_to(:created_by, User)
+    has_many(:created, User, foreign_key: :created_by_id)
+
+    belongs_to(:role, Role)
+
+    has_many(:door_owners, DoorOwners)
+    has_many(:door_users, DoorUsers)
+
+    has_many(:doors_owned, through: [:door_owners, :door])
+    has_many(:doors_available, through: [:door_users, :door])
 
     timestamps()
   end

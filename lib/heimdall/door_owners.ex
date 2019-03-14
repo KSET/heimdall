@@ -1,12 +1,13 @@
 defmodule Heimdall.DoorOwners do
   use Ecto.Schema
   import Ecto.Changeset
-
+  alias Heimdall.{User, Door}
 
   schema "door_owners" do
-    field :date_assigned, :utc_datetime
-    field :door_id, :id
-    field :user_id, :id
+    field(:date_assigned, :utc_datetime)
+
+    belongs_to(:user, User)
+    belongs_to(:door, Door)
 
     timestamps()
   end
