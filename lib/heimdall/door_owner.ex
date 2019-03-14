@@ -1,4 +1,4 @@
-defmodule Heimdall.DoorOwners do
+defmodule Heimdall.DoorOwner do
   use Ecto.Schema
   import Ecto.Changeset
   alias Heimdall.{User, Door}
