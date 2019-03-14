@@ -4,9 +4,10 @@ defmodule Heimdall.DoorUser do
   alias Heimdall.{User, Door}
 
   schema "door_users" do
-    field(:date_assigned, :utc_datetime)
+    field(:date_assigned, :utc_datetime, virtual: true, source: :inserted_at)
     field(:date_expires, :utc_datetime, default: nil)
     field(:opens_remaining, :integer, default: nil)
+    field(:owner, :boolean, default: false)
 
     belongs_to(:user, User)
     belongs_to(:door, Door)
@@ -17,7 +18,7 @@ defmodule Heimdall.DoorUser do
   @doc false
   def changeset(door_users, attrs) do
     door_users
-    |> cast(attrs, [:opens_remaining, :date_expires, :date_assigned])
-    |> validate_required([:date_assigned])
+    |> cast(attrs, [:opens_remaining, :date_expires])
+    |> validate_required([:user_id, :door_id])
   end
 end
