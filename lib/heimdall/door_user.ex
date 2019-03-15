@@ -1,7 +1,8 @@
 defmodule Heimdall.DoorUser do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Heimdall.{User, Door}
+  alias Heimdall.Door
+  alias Heimdall.Account.User
 
   schema "door_users" do
     field(:date_assigned, :utc_datetime, virtual: true, source: :inserted_at)

@@ -1,7 +1,8 @@
 defmodule Heimdall.Log do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Heimdall.{User, Door}
+  alias Heimdall.Door
+  alias Heimdall.Account.User
 
   schema "logs" do
     field(:access_granted, :boolean, default: false)
