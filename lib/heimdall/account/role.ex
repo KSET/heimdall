@@ -1,4 +1,4 @@
-defmodule Heimdall.Role do
+defmodule Heimdall.Account.Role do
   use Ecto.Schema
   import Ecto.Changeset
 
