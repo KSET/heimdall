@@ -22,10 +22,6 @@ defmodule Heimdall.Account.User do
     timestamps()
   end
 
-  @spec get_permissions(integer() | User.t()) :: [String.t()]
-  def get_permissions(%User{id: id}), do: Role.list_permissions(id)
-  def get_permissions(id) when is_integer(id), do: Role.list_permissions(id)
-
   @doc false
   def changeset(user, attrs) do
     user
