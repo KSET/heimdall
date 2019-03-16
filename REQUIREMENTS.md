@@ -32,7 +32,7 @@ WEB:
   * Admins
     * Can add/modify/delete all users and assign roles
     * Can add doors to bosses
-    * Can add add or modify permissions
+    * Can add or modify permissions
   * Boss
     * Can add users to doors
   * Users
@@ -52,7 +52,7 @@ Users:
   * password
   * code                (The user's RFID code)
   * role_id             -> Roles.id
-  * created_by          -> Users.id
+  * created_by_id       -> Users.id
 
 Roles:
   * role_id
@@ -69,14 +69,10 @@ Doors:
   * code                (Door/reader code)
   * name                (Friendly door name eg. Comp door)
 
-DoorOwners:
-  * door_id             -> Doors.id
-  * user_id             -> Users.id
-  * date_assigned
-
 DoorUsers:
   * door_id             -> Doors.id
   * user_id             -> Users.id
+  * owner               (Whether the user is the (one of the) owner(s) of the door)
   * [opens_remaining]   (Number of times the user can open the door at this point)
   * [date_expires]      (Date when the access expires)
   * date_assigned
