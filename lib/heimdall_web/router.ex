@@ -20,6 +20,7 @@ defmodule HeimdallWeb.Router do
     get("/", PageController, :index)
 
     resources("/users", UserController)
+    resources("/doors", DoorController)
   end
 
   # Other scopes may use custom stacks.

@@ -1,7 +1,7 @@
 defmodule Heimdall.Log do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Heimdall.Door
+  alias Heimdall.Equipment.Door
   alias Heimdall.Account.User
 
   schema "logs" do

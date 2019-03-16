@@ -1,0 +1,18 @@
+<h2>Show Door</h2>
+
+<ul>
+
+  <li>
+    <strong>Code:</strong>
+    <%= @door.code %>
+  </li>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @door.name %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: door_path(@conn, :edit, @door) %></span>
+<span><%= link "Back", to: door_path(@conn, :index) %></span>

@@ -1,4 +1,4 @@
-defmodule Heimdall.Door do
+defmodule Heimdall.Equipment.Door do
   use Ecto.Schema
   import Ecto.Changeset
   alias Heimdall.{Log, DoorUser}
@@ -21,5 +21,6 @@ defmodule Heimdall.Door do
     |> cast(attrs, [:code, :name])
     |> validate_required([:code, :name])
     |> unique_constraint(:code)
+    |> unique_constraint(:door)
   end
 end
