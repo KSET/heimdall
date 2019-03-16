@@ -1,8 +1,9 @@
 defmodule Heimdall.Account.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Heimdall.{Role, DoorUser}
+  alias Heimdall.Role
   alias Heimdall.Account.User
+  alias Heimdall.Relations.DoorUser
 
   schema "users" do
     field(:code, :string)
