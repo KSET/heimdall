@@ -1,4 +1,4 @@
-defmodule Heimdall.Permission do
+defmodule Heimdall.Account.Permission do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -15,5 +15,6 @@ defmodule Heimdall.Permission do
     |> cast(attrs, [:bit, :name])
     |> validate_required([:bit, :name])
     |> unique_constraint(:bit)
+    |> unique_constraint(:name)
   end
 end
