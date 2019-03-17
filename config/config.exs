@@ -30,7 +30,11 @@ config :heimdall, HeimdallWeb.Guardian,
   allowed_drift: 2000,
   verify_issuer: true
 
-config :comeonin, :bcrypt_log_rounds, 4
+config :argon2_elixir,
+  argon2_type: 1, # Argon2i
+  t_cost: 10,
+  m_cost: 17,
+  parallelism: 8
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
