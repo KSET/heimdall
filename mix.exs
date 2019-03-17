@@ -10,7 +10,18 @@ defmodule Heimdall.Mixfile do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+
+      # Docs
+      name: "KSET door access controll app",
+      source_url: "https://github.com/KSET/heimdall",
+      homepage_url: "https://github.com/KSET/heimdall",
+      # The main page in the docs
+      docs: [
+        main: "KSET door access controll app",
+        # logo: "logo.png",
+        extras: ["README.md", "REQUIREMENTS.md"]
+      ]
     ]
   end
 
@@ -20,7 +31,7 @@ defmodule Heimdall.Mixfile do
   def application do
     [
       mod: {Heimdall.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :comeonin]
     ]
   end
 
@@ -41,7 +52,10 @@ defmodule Heimdall.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:plug_cowboy, "~> 1.0"}
+      {:plug_cowboy, "~> 1.0"},
+      {:comeonin, "~> 5.0"},
+      {:guardian, "~> 1.0"},
+      {:plug, "~> 1.0"}
     ]
   end
 
