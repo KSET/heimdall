@@ -8,11 +8,11 @@ defmodule HeimdallWeb.Guardian do
 
   use Guardian, otp_app: :real_world
 
-  alias Heimdall.{Repo, Account.User}
+  alias Heimdall.{Account, Account.User}
 
   def subject_for_token(%User{} = user, _claims), do: {:ok, to_string(user.id)}
   def subject_for_token(_, _), do: {:error, "Unknown resource type"}
 
-  def resource_from_claims(%{"sub" => user_id}), do: {:ok, Repo.get(User, user_id)}
+  def resource_from_claims(%{"sub" => user_id}), do: {:ok, Account.get_user!(user_id)}
   def resource_from_claims(_claims), do: {:error, "Unknown resource type"}
 end
