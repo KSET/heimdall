@@ -27,5 +27,12 @@ defmodule Heimdall.Account.User do
     |> cast(attrs, [:first_name, :last_name, :password, :code])
     |> validate_required([:first_name, :last_name, :password, :code, :role_id])
     |> unique_constraint(:code)
+    |> put_pass_hash()
   end
+
+  defp put_pass_hash(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do
+    change(changeset, password: Argon2.hash_pwd_salt(password))
+  end
+
+  defp put_pass_hash(changeset), do: changeset
 end

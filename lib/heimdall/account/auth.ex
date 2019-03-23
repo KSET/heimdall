@@ -21,18 +21,6 @@ defmodule Heimdall.Account.Auth do
     end
   end
 
-  def register(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> hash_password()
-    |> Repo.insert()
-  end
-
   defp check_password(nil, _password), do: false
   defp check_password(user, password), do: Encryption.validate_password(password, user.password)
-
-  defp hash_password(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset),
-    do: put_change(changeset, :password, Encryption.hash_password(password))
-
-  defp hash_password(changeset), do: changeset
 end
