@@ -6,7 +6,7 @@ defmodule HeimdallWeb.Guardian do
   More details here: https://github.com/ueberauth/guardian#installation
   """
 
-  use Guardian, otp_app: :real_world
+  use Guardian, otp_app: :heimdall
 
   alias Heimdall.{Account, Account.User}
 
