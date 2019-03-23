@@ -16,7 +16,7 @@ defmodule Heimdall.Log do
   @doc false
   def changeset(log, attrs) do
     log
-    |> cast(attrs, [:access_granted])
+    |> cast(attrs, [:access_granted, :user_id, :door_id])
     |> validate_required([:access_granted, :user_id, :door_id])
   end
 end
