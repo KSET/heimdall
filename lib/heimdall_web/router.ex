@@ -1,6 +1,14 @@
 defmodule HeimdallWeb.Router do
   use HeimdallWeb, :router
 
+  pipeline :auth do
+    plug(Heimdall.Auth.Pipeline)
+  end
+
+  pipeline :ensure_auth do
+    plug(Guardian.Plug.EnsureAuthenticated)
+  end
+
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
@@ -15,9 +23,15 @@ defmodule HeimdallWeb.Router do
 
   scope "/", HeimdallWeb do
     # Use the default browser stack
-    pipe_through(:browser)
+    pipe_through([:browser, :auth])
 
     get("/", PageController, :index)
+    post("/", PageController, :login)
+    post("/logout", PageController, :logout)
+  end
+
+  scope "/", HeimdallWeb do
+    pipe_through([:browser, :auth, :ensure_auth])
 
     resources("/users", UserController)
     resources("/doors", DoorController)
