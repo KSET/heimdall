@@ -29,6 +29,23 @@ defmodule Heimdall.Account.User do
     |> put_pass_hash()
   end
 
+  @spec to_map(User.t() | any(), boolean()) :: map()
+  def to_map(%User{} = user, with_sensitive_info \\ false) do
+    keys = map_keys(with_sensitive_info)
+
+    user
+    |> Map.take(keys)
+    |> fix_role()
+  end
+
+  def to_map(_user, _sensitive), do: %{}
+
+  defp map_keys(false), do: [:code, :first_name, :last_name, :role_id, :role]
+  defp map_keys(true), do: [:password] ++ map_keys(false)
+
+  defp fix_role(%{role: %Role{}} = map), do: map
+  defp fix_role(map), do: %{map | role: %{id: map.role_id}}
+
   defp put_pass_hash(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do
     change(changeset, password: Argon2.hash_pwd_salt(password))
   end

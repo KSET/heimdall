@@ -3,6 +3,7 @@ defmodule Heimdall.Equipment.Door do
   import Ecto.Changeset
   alias Heimdall.Log
   alias Heimdall.Relations.DoorUser
+  alias Heimdall.Equipment.Door
 
   schema "doors" do
     field(:code, :string)
@@ -15,6 +16,10 @@ defmodule Heimdall.Equipment.Door do
 
     timestamps()
   end
+
+  @spec to_map(Door.t() | any()) :: map()
+  def to_map(%Door{} = door), do: door |> Map.take([:code, :name])
+  def to_map(_), do: %{}
 
   @doc false
   def changeset(door, attrs) do
