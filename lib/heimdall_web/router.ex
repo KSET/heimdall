@@ -37,6 +37,12 @@ defmodule HeimdallWeb.Router do
     resources("/doors", DoorController)
   end
 
+  scope "/api", HeimdallWeb do
+    pipe_through([:api, :auth])
+
+    post("/equipment/doors/request-access", ApiController, :request_access)
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", HeimdallWeb do
   #   pipe_through :api
