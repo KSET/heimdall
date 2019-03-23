@@ -1,4 +1,4 @@
-defmodule Heimdall.Account.Auth do
+defmodule Heimdall.Auth do
   @moduledoc """
   The boundry for the Auth system
   """

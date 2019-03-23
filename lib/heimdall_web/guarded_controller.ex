@@ -20,7 +20,7 @@ defmodule HeimdallWeb.GuardedController do
         apply(__MODULE__, action_name(conn), [
           conn,
           conn.params,
-          HeimdallWeb.Guardian.Plug.current_resource(conn)
+          Heimdall.Auth.Guardian.Plug.current_resource(conn)
         ])
       end
     end

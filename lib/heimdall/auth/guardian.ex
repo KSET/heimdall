@@ -1,4 +1,4 @@
-defmodule HeimdallWeb.Guardian do
+defmodule Heimdall.Auth.Guardian do
   @moduledoc """
   This module is required by Guardian, to implements all type or configuration for
   the auth token.
