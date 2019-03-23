@@ -19,7 +19,7 @@ defmodule Heimdall.Relations.DoorUser do
   @doc false
   def changeset(door_users, attrs) do
     door_users
-    |> cast(attrs, [:opens_remaining, :date_expires])
+    |> cast(attrs, [:opens_remaining, :date_expires, :user_id, :door_id])
     |> validate_required([:user_id, :door_id])
   end
 end
