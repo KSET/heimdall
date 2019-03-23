@@ -45,16 +45,8 @@ defmodule Heimdall.Log do
   @spec add_attempt(%{door: integer(), success: boolean(), user: integer()}) ::
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
   def add_attempt(%{user: user_id, door: door_id, success: success}) do
-    new_log =
-      %Log{}
-      |> changeset(%{user_id: user_id, door_id: door_id, access_granted: success})
-
-    try do
-      new_log
-      |> Repo.insert()
-    rescue
-      Ecto.ConstraintError ->
-        {:error, new_log}
-    end
+    %Log{}
+    |> changeset(%{user_id: user_id, door_id: door_id, access_granted: success})
+    |> Repo.insert()
   end
 end

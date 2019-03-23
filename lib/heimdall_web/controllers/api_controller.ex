@@ -19,4 +19,14 @@ defmodule HeimdallWeb.ApiController do
     conn
     |> render("request-access.json", data)
   end
+
+  def logs(conn, _params) do
+    logs =
+      Heimdall.Log
+      |> Heimdall.Repo.all()
+      |> Heimdall.Repo.preload([:user, :door])
+
+    conn
+    |> render("logs.json", %{logs: logs})
+  end
 end
