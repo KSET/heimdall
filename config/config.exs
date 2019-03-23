@@ -21,9 +21,9 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
 
-config :heimdall, HeimdallWeb.Guardian,
+config :heimdall, Heimdall.Auth.Guardian,
   issuer: "Heimdall",
-  secret_key: "b2qcr*sNt%Q94XWy3IbHnQG^fhJ@qPM3C#f2!eXUZ%3hk&nWFtAnLVC3V4H4&zw2",
+  secret_key: "9bbxitIHtKPkeJ7HigVcBFN6C20i7tXZHhCvBnoubaYKz+fl79H2zmfMG/yTZScC",
   # optional
   allowed_algos: ["HS256"],
   ttl: {30, :days},
