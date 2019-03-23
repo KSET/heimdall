@@ -29,8 +29,11 @@ defmodule Heimdall.Account.User do
     |> put_pass_hash()
   end
 
+  @spec to_map(User.t() | any()) :: map()
+  def to_map(user), do: to_map(user, false)
+
   @spec to_map(User.t() | any(), boolean()) :: map()
-  def to_map(%User{} = user, with_sensitive_info \\ false) do
+  def to_map(%User{} = user, with_sensitive_info) do
     keys = map_keys(with_sensitive_info)
 
     user
