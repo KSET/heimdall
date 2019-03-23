@@ -24,7 +24,7 @@ defmodule Heimdall.Account.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:first_name, :last_name, :password, :code])
+    |> cast(attrs, [:first_name, :last_name, :password, :code, :role_id])
     |> validate_required([:first_name, :last_name, :password, :code, :role_id])
     |> unique_constraint(:code)
     |> put_pass_hash()
