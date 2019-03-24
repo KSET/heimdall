@@ -20,13 +20,22 @@ defmodule HeimdallWeb.ApiController do
     |> render("request-access.json", data)
   end
 
-  def logs(conn, _params) do
-    logs =
-      Heimdall.Log
-      |> Heimdall.Repo.all()
-      |> Heimdall.Repo.preload([:user, :door])
+  def logs(conn, params) do
+    %Paginator.Page{entries: logs, metadata: metadata} =
+      from(
+        log in Heimdall.Log,
+        select: log,
+        order_by: :id
+      )
+      |> Heimdall.Repo.paginate(
+        cursor_fields: [:id],
+        maximum_limit: 50,
+        limit: Map.get(params, "limit", 10),
+        after: Map.get(params, "after"),
+        before: Map.get(params, "before")
+      )
 
     conn
-    |> render("logs.json", %{logs: logs})
+    |> render("logs.json", %{logs: logs, metadata: metadata})
   end
 end

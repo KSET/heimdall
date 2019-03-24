@@ -1,5 +1,6 @@
 defmodule Heimdall.Repo do
   use Ecto.Repo, otp_app: :heimdall
+  use Paginator
 
   @doc """
   Dynamically loads the repository url from the

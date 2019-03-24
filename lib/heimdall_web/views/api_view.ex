@@ -6,8 +6,10 @@ defmodule HeimdallWeb.ApiView do
     |> Map.take([:user, :door, :success])
   end
 
-  def render("logs.json", %{logs: logs}) do
-    logs
-    |> Enum.map(&Heimdall.Log.to_map/1)
+  def render("logs.json", %{logs: logs, metadata: metadata}) do
+    %{
+      meta: metadata,
+      logs: Enum.map(logs, &Heimdall.Log.to_map/1)
+    }
   end
 end
