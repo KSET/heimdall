@@ -304,6 +304,16 @@ defmodule Heimdall.Account do
     |> Repo.one() != nil
   end
 
+  def has_permission(user, permission_id) when is_integer(permission_id) do
+    has_permission(user, %Permission{id: permission_id})
+  end
+
+  def has_permission(user, permission_name) when is_binary(permission_name) do
+    has_permission(user, %Permission{name: permission_name})
+  end
+
+  def has_permission(_user, _permission), do: false
+
   @spec get_permissions_of(User.t() | Role.t()) :: [Permission.t()]
   def get_permissions_of(%Role{id: id}), do: get_permissions_from_role(id)
   def get_permissions_of(%User{role: %Role{} = role}), do: get_permissions_of(role)
