@@ -309,6 +309,7 @@ defmodule Heimdall.Account do
   def get_permissions_of(%User{role: %Role{} = role}), do: get_permissions_of(role)
   def get_permissions_of(%User{id: id}), do: get_permissions_from_user(id)
   def get_permissions_of(%User{role_id: id}), do: get_permissions_from_role(id)
+  def get_permissions_of(_), do: []
 
   defp get_permissions_from_role(id) when is_integer(id) do
     from(
