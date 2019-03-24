@@ -28,6 +28,7 @@ defmodule Heimdall.Log do
         user: user,
         door_id: door_id,
         door: door,
+        access_granted: success,
         inserted_at: logged
       }) do
     %{
@@ -36,6 +37,7 @@ defmodule Heimdall.Log do
       user: User.to_map(user),
       door_id: door_id,
       door: Door.to_map(door),
+      success: success,
       logged: logged
     }
   end
