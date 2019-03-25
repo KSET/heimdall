@@ -69,6 +69,7 @@ defmodule Heimdall.Log do
 
     from(
       log in Log,
+      distinct: true,
       join: s in subquery(owned_door_ids),
       on: s.door_id == log.door_id or log.user_id == ^user_id
     )
