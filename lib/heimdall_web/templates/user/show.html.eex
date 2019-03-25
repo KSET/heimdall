@@ -50,6 +50,10 @@
     </ol>
   </li>
 
+  <li>
+    <strong><%= link "Logs", to: log_path(@conn, :for_user, @user.id) %></strong>
+  </li>
+
 </ul>
 
 <%= if @can_modify do %>
