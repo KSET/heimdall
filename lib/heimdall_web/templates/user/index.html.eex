@@ -19,12 +19,25 @@
 
       <td class="text-right">
         <span><%= link "Show", to: user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Edit", to: user_path(@conn, :edit, user), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Delete", to: user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+        <%= if @can_modify do %>
+          <span><%= link "Edit", to: user_path(@conn, :edit, user), class: "btn btn-default btn-xs" %></span>          
+          <span><%= link "Delete", to: user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+        <% end %>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<span><%= link "New User", to: user_path(@conn, :new) %></span>
+<%= if @can_modify do %>
+  <span><%= link "New User", to: user_path(@conn, :new) %></span>
+<% end %>
+
+<script>console.log(<% raw Poison.encode!(@metadata) %>)</script>
+
+<%= if @metadata.before do %>
+  <span><%= link "Previous", to: user_path(@conn, :index, before: @metadata.before) %></span>
+<% end %>
+<%= if @metadata.after do %>
+  <span><%= link "Next", to: user_path(@conn, :index, after: @metadata.after) %></span>
+<% end %>

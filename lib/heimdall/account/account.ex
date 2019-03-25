@@ -7,6 +7,8 @@ defmodule Heimdall.Account do
   alias Heimdall.Repo
 
   alias Heimdall.Account.{User, Role, Permission}
+  alias Heimdall.Equipment.Door
+  alias Heimdall.Relations.DoorUser
 
   @doc """
   Returns the list of users.
@@ -100,6 +102,26 @@ defmodule Heimdall.Account do
   """
   def change_user(%User{} = user) do
     User.changeset(user, %{})
+  end
+
+  @spec get_owned_doors(User.t()) :: list()
+  def get_owned_doors(%User{} = user) do
+    user
+    |> owned_doors_query()
+    |> Repo.all()
+  end
+
+  @spec owned_doors_query(User.t()) :: Ecto.Query.t()
+  def owned_doors_query(%User{id: id}) do
+    from(
+      du in DoorUser,
+      left_join: d in Door,
+      on: d.id == du.door_id,
+      left_join: u in User,
+      on: u.id == du.user_id,
+      select: d,
+      where: u.id == ^id and du.owner == true
+    )
   end
 
   @doc """

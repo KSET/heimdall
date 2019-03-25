@@ -17,7 +17,42 @@
     <%= @user.code %>
   </li>
 
+  <li>
+    <strong>Role:</strong>
+    <%= @user.role.name %>
+  </li>
+
+  <%= if @user.created_by do %>
+    <% creator = @user.created_by %>
+    <li>
+      <strong>Creator:</strong>
+      <%= link "#{creator.first_name} #{creator.last_name} (#{creator.code})", to: user_path(@conn, :show, creator) %>
+    </li>
+  <% end %>
+
+  <%= if Enum.count(@user.created) != 0 do %>
+    <li>
+      <strong>Created users:</strong>
+      <ol>
+        <%= for created <- @user.created do %>
+          <li><%= link "#{created.first_name} #{created.last_name} (#{created.code})", to: user_path(@conn, :show, created) %></li>
+        <% end %>
+      </ol>
+    </li>
+  <% end %>
+
+  <li>
+    <strong>Doors:</strong>
+    <ol>
+      <%= for door <- @user.doors do %>
+        <li><%= link "#{door.name} (#{door.code})", to: door_path(@conn, :show, door) %></li>
+      <% end %>
+    </ol>
+  </li>
+
 </ul>
 
-<span><%= link "Edit", to: user_path(@conn, :edit, @user) %></span>
+<%= if @can_modify do %>
+  <span><%= link "Edit", to: user_path(@conn, :edit, @user) %></span>
+<% end %>
 <span><%= link "Back", to: user_path(@conn, :index) %></span>
