@@ -25,10 +25,11 @@ defmodule HeimdallWeb.ApiController do
       from(
         log in Heimdall.Log,
         select: log,
-        order_by: :id
+        order_by: [desc: :id]
       )
       |> Heimdall.Repo.paginate(
         cursor_fields: [:id],
+        sort_direction: :desc,
         maximum_limit: 50,
         limit: Map.get(params, "limit", 10),
         after: Map.get(params, "after"),
