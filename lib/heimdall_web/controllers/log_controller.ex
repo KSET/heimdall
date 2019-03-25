@@ -28,4 +28,25 @@ defmodule HeimdallWeb.LogController do
       metadata: metadata
     )
   end
+
+  def for_user(conn, %{"user_id" => id} = params) do
+    %Paginator.Page{entries: logs, metadata: metadata} =
+      from(
+        log in Heimdall.Log,
+        order_by: [desc: :id],
+        where: log.user_id == ^id
+      )
+      |> Heimdall.Repo.paginate(
+        cursor_fields: [:id],
+        maximum_limit: 50,
+        limit: Map.get(params, "limit", 10),
+        after: Map.get(params, "after"),
+        before: Map.get(params, "before")
+      )
+
+    render(conn, "index.html",
+      logs: logs |> Heimdall.Repo.preload([:door, :user]),
+      metadata: metadata
+    )
+  end
 end

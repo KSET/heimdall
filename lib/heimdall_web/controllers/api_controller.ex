@@ -39,4 +39,23 @@ defmodule HeimdallWeb.ApiController do
     conn
     |> render("logs.json", %{logs: logs, metadata: metadata})
   end
+
+  def logs_for_user(conn, %{"user_id" => id} = params) do
+    %Paginator.Page{entries: logs, metadata: metadata} =
+      from(
+        log in Heimdall.Log,
+        order_by: [desc: :id],
+        where: log.user_id == ^id
+      )
+      |> Heimdall.Repo.paginate(
+        cursor_fields: [:id],
+        maximum_limit: 50,
+        limit: Map.get(params, "limit", 10),
+        after: Map.get(params, "after"),
+        before: Map.get(params, "before")
+      )
+
+    conn
+    |> render("logs.json", %{logs: logs, metadata: metadata})
+  end
 end
