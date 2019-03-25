@@ -360,16 +360,13 @@ defmodule Heimdall.Account do
     |> Repo.one() != nil
   end
 
-  def has_permission(%User{} = user, %Permission{} = permission) do
+  def has_permission(%User{} = user, permission) do
     has_permission(user, [permission])
   end
 
-  def has_permission(%User{} = user, permission_id) when is_integer(permission_id) do
-    has_permission(user, %Permission{id: permission_id})
-  end
-
-  def has_permission(%User{} = user, permission_name) when is_binary(permission_name) do
-    has_permission(user, %Permission{name: permission_name})
+  def has_permission(user_id, permission) when is_integer(user_id) do
+    %User{id: user_id}
+    |> has_permission(permission)
   end
 
   @spec has_permissions(User.t() | integer(), list(String.t())) :: boolean()
