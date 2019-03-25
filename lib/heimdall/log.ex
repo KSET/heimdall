@@ -1,9 +1,11 @@
 defmodule Heimdall.Log do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query, warn: false
   alias Heimdall.Equipment.Door
   alias Heimdall.Account.User
-  alias Heimdall.{Log, Repo}
+  alias Heimdall.{Log, Repo, Account}
+  alias Heimdall.Relations.DoorUser
 
   schema "logs" do
     field(:access_granted, :boolean, default: false)
@@ -43,6 +45,34 @@ defmodule Heimdall.Log do
   end
 
   def to_map(_), do: %{}
+
+  @spec owned_query(User.t()) :: Ecto.Query.t()
+  def owned_query(%User{id: id} = user) do
+    user
+    |> Account.has_permission("log:view-all")
+    |> owned_query(id)
+  end
+
+  defp owned_query(true, _user_id) do
+    from(Log)
+  end
+
+  defp owned_query(false, user_id) do
+    owned_door_ids =
+      from(
+        u in User,
+        left_join: du in DoorUser,
+        on: du.user_id == u.id,
+        select: du.door_id,
+        where: u.id == ^user_id and du.owner == true
+      )
+
+    from(
+      log in Log,
+      join: s in subquery(owned_door_ids),
+      on: s.door_id == log.door_id or log.user_id == ^user_id
+    )
+  end
 
   @spec add_attempt(%{door: integer(), success: boolean(), user: integer()}) ::
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
