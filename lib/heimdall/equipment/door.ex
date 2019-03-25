@@ -27,6 +27,6 @@ defmodule Heimdall.Equipment.Door do
     |> cast(attrs, [:code, :name])
     |> validate_required([:code, :name])
     |> unique_constraint(:code)
-    |> unique_constraint(:door)
+    |> unique_constraint(:name)
   end
 end
