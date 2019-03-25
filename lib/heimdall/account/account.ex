@@ -290,29 +290,81 @@ defmodule Heimdall.Account do
     Permission.changeset(permission, %{})
   end
 
-  @spec has_permission(User.t(), Permission.t()) :: any()
-  def has_permission(%User{id: user_id}, %Permission{id: p_id, name: p_name}) do
+  @spec has_permission(User.t(), Permission.t() | list()) :: any()
+  def has_permission(%User{id: user_id}, permissions) when is_list(permissions) do
+    permission_names =
+      permissions
+      |> Enum.map(fn permission ->
+        permission
+        |> case do
+          %Permission{name: name} ->
+            name
+
+          name when is_binary(name) ->
+            name
+
+          _ ->
+            nil
+        end
+      end)
+      |> Enum.filter(& &1)
+
+    permission_ids =
+      permissions
+      |> Enum.map(fn permission ->
+        permission
+        |> case do
+          %Permission{id: id} ->
+            id
+
+          id when is_integer(id) ->
+            id
+
+          _ ->
+            nil
+        end
+      end)
+      |> Enum.filter(& &1)
+
     from(
       [p, _r, u] in get_permissions_base(true),
       where:
         u.id == ^user_id and
-          (p.name == ^(p_name || "") or
-             p.id == ^(p_id || 0)),
+          (fragment("(? = ANY(?))", p.id, ^permission_ids) or
+             fragment("(? = ANY(?))", p.name, ^permission_names)),
       select: p.id,
       limit: 1
     )
     |> Repo.one() != nil
   end
 
-  def has_permission(user, permission_id) when is_integer(permission_id) do
+  def has_permission(%User{} = user, %Permission{} = permission) do
+    has_permission(user, [permission])
+  end
+
+  def has_permission(%User{} = user, permission_id) when is_integer(permission_id) do
     has_permission(user, %Permission{id: permission_id})
   end
 
-  def has_permission(user, permission_name) when is_binary(permission_name) do
+  def has_permission(%User{} = user, permission_name) when is_binary(permission_name) do
     has_permission(user, %Permission{name: permission_name})
   end
 
-  def has_permission(_user, _permission), do: false
+  @spec has_permissions(User.t() | integer(), list(String.t())) :: boolean()
+  def has_permissions(user_id, permission_names) when is_integer(user_id) do
+    %User{id: user_id}
+    |> has_permissions(permission_names)
+  end
+
+  def has_permissions(%User{id: user_id}, permission_names) when is_list(permission_names) do
+    from(
+      [p, _r, u] in get_permissions_base(true),
+      where: u.id == ^user_id and fragment("? = ALL(?)", p.name, ^permission_names),
+      select: p.id,
+      limit: 1
+    )
+    |> Repo.one() != nil
+  end
 
   @spec get_permissions_of(User.t() | Role.t()) :: [Permission.t()]
   def get_permissions_of(%Role{id: id}), do: get_permissions_from_role(id)
