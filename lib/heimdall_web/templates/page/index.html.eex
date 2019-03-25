@@ -21,6 +21,11 @@
   <% end %>
 <% else %>
   <h1>Hello, <%= @maybe_user.first_name %> <%= @maybe_user.last_name %> (<%= @maybe_user.code %>)</h1>
+  <%= if Heimdall.Account.has_permission(@maybe_user, ["log:view", "log:view-all"]) do %>
+    <span>
+      <%= link "Logs", to: log_path(@conn, :index)  %>
+    </span>
+  <% end %>
   <span>
     <%= link "Users", to: user_path(@conn, :index)  %>
   </span>

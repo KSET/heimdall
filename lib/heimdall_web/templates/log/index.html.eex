@@ -1,0 +1,48 @@
+<h2>Listing Logs</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Door</th>
+      <th>User</th>
+      <th>Success</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for log <- @logs do %>
+    <tr>
+      <td>
+        <%= if log.door do %>
+            <span><%= link log.door.name, to: door_path(@conn, :show, log.door), class: "btn btn-default btn-xs" %></span>
+        <% else %>
+            <span>:<%= log.door_id %>:</span>
+        <% end %>
+      </td>
+      <td>
+        <%= if log.user do %>
+            <span><%= link log.user.code, to: user_path(@conn, :show, log.user || %Heimdall.Account.User{}), class: "btn btn-default btn-xs" %></span>
+        <% else %>
+            <span>:<%= log.user_id %>:</span>
+        <% end %>
+      </td>
+      <td>
+        <%= if log.access_granted do %>
+        <span style="background: green; color: white">&check;</span>
+        <% else %>
+        <span style="background: red; color: white">&cross;</span>
+        <% end %>
+      </td>
+      <td>
+        <span><%= log.inserted_at %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+<%= if @metadata.before do %>
+  <span><%= link "Previous", to: log_path(@conn, :index, before: @metadata.before) %></span>
+<% end %>
+<%= if @metadata.after do %>
+  <span><%= link "Next", to: log_path(@conn, :index, after: @metadata.after) %></span>
+<% end %>

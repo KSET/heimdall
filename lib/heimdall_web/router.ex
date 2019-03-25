@@ -35,6 +35,8 @@ defmodule HeimdallWeb.Router do
 
     resources("/users", UserController)
     resources("/doors", DoorController)
+
+    get("/logs", LogController, :index)
   end
 
   scope "/api", HeimdallWeb do
