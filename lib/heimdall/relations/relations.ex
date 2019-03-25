@@ -7,39 +7,26 @@ defmodule Heimdall.Relations do
   alias Heimdall.Repo
 
   alias Heimdall.Relations.DoorUser
+  alias Heimdall.Account
 
-  @spec can_user_access_door(nil | DoorUser.t()) :: boolean()
-  def can_user_access_door(%DoorUser{opens_remaining: opens_remaining, date_expires: date_expires}) do
-    opens_valid = opens_remaining > 0
-
-    date_valid =
-      date_expires
-      |> case do
-        nil ->
-          true
-
-        date ->
-          DateTime.compare(date, DateTime.utc_now()) != :lt
-      end
-
-    date_valid && opens_valid
-  end
-
-  def can_user_access_door(_), do: false
-
-  @spec process_user_door_access(integer(), integer()) :: boolean()
-  def process_user_door_access(user_id, door_id) do
+  def process_user_door_access(user_id, door_id) when is_integer(user_id) do
     from(
       du in DoorUser,
       where: du.door_id == ^door_id and du.user_id == ^user_id,
       limit: 1
     )
     |> Repo.one()
-    |> process_user_door_access()
+    |> case do
+      %DoorUser{} = door_user ->
+        update_door_user_on_access(door_user)
+        can_user_access_door(user_id, door_user)
+
+      _ ->
+        Account.has_permission(user_id, "door:bypass")
+    end
   end
 
-  @spec process_user_door_access(DoorUser.t() | any()) :: boolean()
-  def process_user_door_access(%DoorUser{} = door_user) do
+  defp update_door_user_on_access(%DoorUser{} = door_user) do
     if door_user.opens_remaining != nil do
       update_data = %{
         opens_remaining: door_user.opens_remaining - 1
@@ -48,11 +35,27 @@ defmodule Heimdall.Relations do
       door_user
       |> update_door_user(update_data)
     end
-
-    can_user_access_door(door_user)
   end
 
-  def process_user_door_access(_params), do: false
+  defp can_user_access_door(user_id, %DoorUser{} = door_user) do
+    opens_valid = door_user.opens_remaining > 0
+
+    date_valid =
+      door_user.date_expires
+      |> case do
+        nil ->
+          true
+
+        date ->
+          DateTime.compare(date, DateTime.utc_now()) != :lt
+      end
+
+    (date_valid && opens_valid) || can_user_access_door(user_id)
+  end
+
+  defp can_user_access_door(user_id, _), do: can_user_access_door(user_id)
+
+  defp can_user_access_door(user_id), do: Account.has_permission(user_id, "door:bypass")
 
   @doc """
   Returns the list of door_users.
