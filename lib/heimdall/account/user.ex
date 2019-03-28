@@ -3,6 +3,7 @@ defmodule Heimdall.Account.User do
   import Ecto.Changeset
   alias Heimdall.Account.{User, Role}
   alias Heimdall.Relations.DoorUser
+  alias Heimdall.Log
 
   schema "users" do
     field(:code, :string)
@@ -17,6 +18,8 @@ defmodule Heimdall.Account.User do
 
     has_many(:door_users, DoorUser)
     has_many(:doors, through: [:door_users, :door])
+
+    has_many(:logs, Log, foreign_key: :user_code, references: :code)
 
     timestamps()
   end

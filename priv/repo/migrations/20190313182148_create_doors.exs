@@ -3,12 +3,13 @@ defmodule Heimdall.Repo.Migrations.CreateDoors do
 
   def change do
     create table(:doors) do
-      add :code, :string
-      add :name, :string
+      add(:code, :string)
+      add(:name, :string)
 
       timestamps()
     end
 
-    create unique_index(:doors, [:code])
+    create(unique_index(:doors, [:name]))
+    create(unique_index(:doors, [:code]))
   end
 end

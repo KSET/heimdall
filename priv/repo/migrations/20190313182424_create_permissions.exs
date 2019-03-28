@@ -3,12 +3,13 @@ defmodule Heimdall.Repo.Migrations.CreatePermissions do
 
   def change do
     create table(:permissions) do
-      add :bit, :integer
-      add :name, :string
+      add(:bit, :integer)
+      add(:name, :string)
 
       timestamps()
     end
 
-    create unique_index(:permissions, [:bit])
+    create(unique_index(:permissions, [:bit]))
+    create(unique_index(:permissions, [:name]))
   end
 end

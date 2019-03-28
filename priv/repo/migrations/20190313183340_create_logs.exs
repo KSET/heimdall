@@ -3,15 +3,11 @@ defmodule Heimdall.Repo.Migrations.CreateLogs do
 
   def change do
     create table(:logs) do
-      add :access_granted, :boolean, default: false, null: false
-      add :date_logged, :utc_datetime
-      add :door_id, references(:doors, on_delete: :nothing)
-      add :user_id, references(:users, on_delete: :nothing)
+      add(:access_granted, :boolean, default: false, null: false)
+      add(:door_code, :string, null: false)
+      add(:user_code, :string, null: false)
 
       timestamps()
     end
-
-    create index(:logs, [:door_id])
-    create index(:logs, [:user_id])
   end
 end
