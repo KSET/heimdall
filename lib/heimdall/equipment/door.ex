@@ -9,7 +9,7 @@ defmodule Heimdall.Equipment.Door do
     field(:code, :string)
     field(:name, :string)
 
-    has_many(:log, Log, foreign_key: :door_code, references: :code)
+    has_many(:logs, Log, foreign_key: :door_code, references: :code)
 
     has_many(:door_users, DoorUser)
     has_many(:users, through: [:door_users, :user])
