@@ -14,5 +14,6 @@ defmodule Heimdall.Repo.Migrations.CreateDoorUsers do
 
     create(index(:door_users, [:door_id]))
     create(index(:door_users, [:user_id]))
+    create(unique_index(:door_users, [:door_id, :user_id]))
   end
 end
