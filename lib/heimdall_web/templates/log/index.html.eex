@@ -16,14 +16,14 @@
         <%= if log.door do %>
             <span><%= link log.door.name, to: door_path(@conn, :show, log.door), class: "btn btn-default btn-xs" %></span>
         <% else %>
-            <span>:<%= log.door_id %>:</span>
+            <span>:<%= log.door_code %>:</span>
         <% end %>
       </td>
       <td>
         <%= if log.user do %>
             <span><%= link log.user.code, to: user_path(@conn, :show, log.user || %Heimdall.Account.User{}), class: "btn btn-default btn-xs" %></span>
         <% else %>
-            <span>:<%= log.user_id %>:</span>
+            <span>:<%= log.user_code %>:</span>
         <% end %>
       </td>
       <td>

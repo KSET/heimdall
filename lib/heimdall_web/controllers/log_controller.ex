@@ -29,12 +29,12 @@ defmodule HeimdallWeb.LogController do
     )
   end
 
-  def for_user(conn, %{"user_id" => id} = params) do
+  def for_user(conn, %{"user_code" => code} = params) do
     %Paginator.Page{entries: logs, metadata: metadata} =
       from(
         log in Heimdall.Log,
         order_by: [desc: :id],
-        where: log.user_id == ^id
+        where: log.user_code == ^code
       )
       |> Heimdall.Repo.paginate(
         cursor_fields: [:id],

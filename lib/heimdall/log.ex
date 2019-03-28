@@ -47,31 +47,33 @@ defmodule Heimdall.Log do
   def to_map(_), do: %{}
 
   @spec owned_query(User.t()) :: Ecto.Query.t()
-  def owned_query(%User{id: id} = user) do
+  def owned_query(%User{code: code} = user) do
     user
     |> Account.has_permission("log:view-all")
-    |> owned_query(id)
+    |> owned_query(code)
   end
 
-  defp owned_query(true, _user_id) do
+  defp owned_query(true, _user_code) do
     from(Log)
   end
 
-  defp owned_query(false, user_id) do
-    owned_door_ids =
+  defp owned_query(false, user_code) do
+    owned_door_codes =
       from(
         u in User,
         left_join: du in DoorUser,
         on: du.user_id == u.id,
-        select: du.door_id,
-        where: u.id == ^user_id and du.owner == true
+        left_join: d in Door,
+        on: du.door_id == d.id,
+        select: d.code,
+        where: u.code == ^user_code and du.owner == true
       )
 
     from(
       log in Log,
       distinct: true,
-      join: s in subquery(owned_door_ids),
-      on: s.door_id == log.door_id or log.user_id == ^user_id
+      join: s in subquery(owned_door_codes),
+      on: s.code == log.door_code or log.user_code == ^user_code
     )
   end
 

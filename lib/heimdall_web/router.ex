@@ -37,7 +37,7 @@ defmodule HeimdallWeb.Router do
     resources("/doors", DoorController)
 
     get("/logs", LogController, :index)
-    get("/logs/:user_id", LogController, :for_user)
+    get("/logs/:user_code", LogController, :for_user)
   end
 
   scope "/api", HeimdallWeb do
@@ -45,7 +45,7 @@ defmodule HeimdallWeb.Router do
 
     post("/equipment/doors/request-access", ApiController, :request_access)
     get("/logs", ApiController, :logs)
-    get("/logs/:user_id", ApiController, :logs_for_user)
+    get("/logs/:user_code", ApiController, :logs_for_user)
   end
 
   # Other scopes may use custom stacks.

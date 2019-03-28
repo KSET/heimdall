@@ -51,7 +51,7 @@
   </li>
 
   <li>
-    <strong><%= link "Logs", to: log_path(@conn, :for_user, @user.id) %></strong>
+    <strong><%= link "Logs", to: log_path(@conn, :for_user, @user.code) %></strong>
   </li>
 
 </ul>

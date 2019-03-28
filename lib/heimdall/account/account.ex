@@ -313,7 +313,7 @@ defmodule Heimdall.Account do
   end
 
   @spec has_permission(User.t(), Permission.t() | list()) :: any()
-  def has_permission(%User{id: user_id}, permissions) when is_list(permissions) do
+  def has_permission(%User{id: user_id, code: code}, permissions) when is_list(permissions) do
     permission_names =
       permissions
       |> Enum.map(fn permission ->
@@ -351,7 +351,8 @@ defmodule Heimdall.Account do
     from(
       [p, _r, u] in get_permissions_base(true),
       where:
-        u.id == ^user_id and
+        (u.id == ^(user_id || 0) or
+           u.code == ^(code || "")) and
           (fragment("(? = ANY(?))", p.id, ^permission_ids) or
              fragment("(? = ANY(?))", p.name, ^permission_names)),
       select: p.id,
@@ -362,6 +363,11 @@ defmodule Heimdall.Account do
 
   def has_permission(%User{} = user, permission) do
     has_permission(user, [permission])
+  end
+
+  def has_permission(user_code, permission) when is_binary(user_code) do
+    %User{code: user_code}
+    |> has_permission(permission)
   end
 
   def has_permission(user_id, permission) when is_integer(user_id) do

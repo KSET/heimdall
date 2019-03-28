@@ -8,21 +8,27 @@ defmodule Heimdall.Relations do
 
   alias Heimdall.Relations.DoorUser
   alias Heimdall.Account
+  alias Heimdall.Account.User
+  alias Heimdall.Equipment.Door
 
-  def process_user_door_access(user_id, door_id) when is_integer(user_id) do
+  def process_user_door_access(user_code, door_code) when is_binary(user_code) and is_binary(door_code) do
     from(
       du in DoorUser,
-      where: du.door_id == ^door_id and du.user_id == ^user_id,
+      left_join: u in User,
+      on: u.id == du.user_id,
+      left_join: d in Door,
+      on: d.id == du.door_id,
+      where: d.code == ^door_code and u.code == ^user_code,
       limit: 1
     )
     |> Repo.one()
     |> case do
       %DoorUser{} = door_user ->
         update_door_user_on_access(door_user)
-        can_user_access_door(user_id, door_user)
+        can_user_access_door(door_user.user_id, door_user)
 
       _ ->
-        Account.has_permission(user_id, "door:bypass")
+        Account.has_permission(user_code, "door:bypass")
     end
   end
 

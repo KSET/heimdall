@@ -7,11 +7,23 @@ defmodule HeimdallWeb.ApiController do
 
   @spec request_access(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def request_access(conn, %{"user" => user, "door" => door}) do
-    data = %{
-      user: user,
-      door: door,
-      success: Relations.process_user_door_access(user, door)
-    }
+    data =
+      try do
+        {user, door} = {to_string(user), to_string(door)}
+
+        %{
+          user: user,
+          door: door,
+          success: Relations.process_user_door_access(user, door)
+        }
+      rescue
+        Protocol.UndefinedError ->
+          %{
+            user: "",
+            door: "",
+            success: false
+          }
+      end
 
     data
     |> Heimdall.Log.add_attempt()
@@ -40,12 +52,12 @@ defmodule HeimdallWeb.ApiController do
     |> render("logs.json", %{logs: logs, metadata: metadata})
   end
 
-  def logs_for_user(conn, %{"user_id" => id} = params) do
+  def logs_for_user(conn, %{"user_code" => code} = params) do
     %Paginator.Page{entries: logs, metadata: metadata} =
       from(
         log in Heimdall.Log,
         order_by: [desc: :id],
-        where: log.user_id == ^id
+        where: log.user_code == ^code
       )
       |> Heimdall.Repo.paginate(
         cursor_fields: [:id],
