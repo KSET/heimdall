@@ -66,7 +66,8 @@ defmodule Heimdall.Log do
         left_join: d in Door,
         on: du.door_id == d.id,
         select: d.code,
-        where: u.code == ^user_code and du.owner == true
+        where: u.code == ^user_code,
+        where: du.owner == true
       )
 
     from(

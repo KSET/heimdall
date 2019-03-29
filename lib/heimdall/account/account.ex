@@ -120,7 +120,8 @@ defmodule Heimdall.Account do
       left_join: u in User,
       on: u.id == du.user_id,
       select: d,
-      where: u.id == ^id and du.owner == true
+      where: u.id == ^id,
+      where: du.owner == true
     )
   end
 
@@ -351,10 +352,11 @@ defmodule Heimdall.Account do
     from(
       [p, _r, u] in get_permissions_base(true),
       where:
-        (u.id == ^(user_id || 0) or
-           u.code == ^(code || "")) and
-          (fragment("(? = ANY(?))", p.id, ^permission_ids) or
-             fragment("(? = ANY(?))", p.name, ^permission_names)),
+        u.id == ^(user_id || 0) or
+          u.code == ^(code || ""),
+      where:
+        fragment("(? = ANY(?))", p.id, ^permission_ids) or
+          fragment("(? = ANY(?))", p.name, ^permission_names),
       select: p.id,
       limit: 1
     )
@@ -384,7 +386,8 @@ defmodule Heimdall.Account do
   def has_permissions(%User{id: user_id}, permission_names) when is_list(permission_names) do
     from(
       [p, _r, u] in get_permissions_base(true),
-      where: u.id == ^user_id and fragment("? = ALL(?)", p.name, ^permission_names),
+      where: u.id == ^user_id,
+      where: fragment("? = ALL(?)", p.name, ^permission_names),
       select: p.id,
       limit: 1
     )

@@ -11,14 +11,16 @@ defmodule Heimdall.Relations do
   alias Heimdall.Account.User
   alias Heimdall.Equipment.Door
 
-  def process_user_door_access(user_code, door_code) when is_binary(user_code) and is_binary(door_code) do
+  def process_user_door_access(user_code, door_code)
+      when is_binary(user_code) and is_binary(door_code) do
     from(
       du in DoorUser,
       left_join: u in User,
       on: u.id == du.user_id,
       left_join: d in Door,
       on: d.id == du.door_id,
-      where: d.code == ^door_code and u.code == ^user_code,
+      where: d.code == ^door_code,
+      where: u.code == ^user_code,
       limit: 1
     )
     |> Repo.one()
