@@ -45,7 +45,12 @@
     <strong>Doors:</strong>
     <ol>
       <%= for door <- @user.doors do %>
-        <li><%= link "#{door.name} (#{door.code})", to: door_path(@conn, :show, door) %></li>
+        <li>
+          <%= if @door_owners[door.code] do %>
+            [O]
+          <% end %>
+          <%= link "#{door.name} (#{door.code})", to: door_path(@conn, :show, door) %>
+        </li>
       <% end %>
     </ol>
   </li>

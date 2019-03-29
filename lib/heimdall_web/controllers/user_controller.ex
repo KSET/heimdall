@@ -52,7 +52,15 @@ defmodule HeimdallWeb.UserController do
       Guardian.Plug.current_resource(conn)
       |> Account.has_permission("user:modify")
 
-    render(conn, "show.html", user: user, can_modify: can_modify)
+    door_owners =
+      user
+      |> Map.get(:door_users)
+      |> Enum.map(fn door_user ->
+        {door_user.door.code, door_user.owner}
+      end)
+      |> Map.new()
+
+    render(conn, "show.html", user: user, can_modify: can_modify, door_owners: door_owners)
   end
 
   def edit(conn, %{"id" => id}) do

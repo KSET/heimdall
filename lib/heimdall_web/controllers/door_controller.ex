@@ -20,14 +20,26 @@ defmodule HeimdallWeb.DoorController do
         conn
         |> put_flash(:info, "Door created successfully.")
         |> redirect(to: door_path(conn, :show, door))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
   end
 
   def show(conn, %{"id" => id}) do
-    door = Equipment.get_door!(id)
-    render(conn, "show.html", door: door)
+    door =
+      Equipment.get_door!(id)
+      |> Heimdall.Repo.preload([:door_users, :users])
+
+    door_owners =
+      door
+      |> Map.get(:door_users)
+      |> Enum.map(fn door_user ->
+        {door_user.user.code, door_user.owner}
+      end)
+      |> Map.new()
+
+    render(conn, "show.html", door: door, door_owners: door_owners)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -44,6 +56,7 @@ defmodule HeimdallWeb.DoorController do
         conn
         |> put_flash(:info, "Door updated successfully.")
         |> redirect(to: door_path(conn, :show, door))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", door: door, changeset: changeset)
     end

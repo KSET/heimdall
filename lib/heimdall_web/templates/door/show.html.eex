@@ -12,6 +12,20 @@
     <%= @door.name %>
   </li>
 
+  <li>
+    <strong>Users:</strong>
+    <ol>
+      <%= for user <- @door.users do %>
+        <li>
+          <%= if @door_owners[user.code] do %>
+            [O]
+          <% end %>
+          <%= link "#{user.first_name} #{user.last_name} (#{user.code})", to: user_path(@conn, :show, user.id) %>
+        </li>
+      <% end %>
+    </ol>
+  </li>
+
 </ul>
 
 <span><%= link "Edit", to: door_path(@conn, :edit, @door) %></span>
