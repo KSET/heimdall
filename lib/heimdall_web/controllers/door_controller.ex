@@ -1,12 +1,29 @@
 defmodule HeimdallWeb.DoorController do
   use HeimdallWeb, :controller
 
+  import Ecto.Query, warn: false
+
+  alias Heimdall.Account
   alias Heimdall.Equipment
   alias Heimdall.Equipment.Door
 
-  def index(conn, _params) do
-    doors = Equipment.list_doors()
-    render(conn, "index.html", doors: doors)
+  def index(conn, params) do
+    %Paginator.Page{entries: doors, metadata: metadata} =
+      from(Door, order_by: [asc: :name])
+      |> Heimdall.Repo.paginate(
+        sort_direction: :asc,
+        cursor_fields: [:name],
+        maximum_limit: 50,
+        limit: Map.get(params, "limit", 10),
+        after: Map.get(params, "after"),
+        before: Map.get(params, "before")
+      )
+
+    can_modify =
+      Guardian.Plug.current_resource(conn)
+      |> Account.has_permission("door:modify")
+
+    render(conn, "index.html", doors: doors, metadata: metadata, can_modify: can_modify)
   end
 
   def new(conn, _params) do

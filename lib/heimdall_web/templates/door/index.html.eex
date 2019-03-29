@@ -17,12 +17,23 @@
 
       <td class="text-right">
         <span><%= link "Show", to: door_path(@conn, :show, door), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Edit", to: door_path(@conn, :edit, door), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Delete", to: door_path(@conn, :delete, door), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+        <%= if @can_modify do %>
+          <span><%= link "Edit", to: door_path(@conn, :edit, door), class: "btn btn-default btn-xs" %></span>
+          <span><%= link "Delete", to: door_path(@conn, :delete, door), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+        <% end %>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<span><%= link "New Door", to: door_path(@conn, :new) %></span>
+<%= if @can_modify do %>
+  <span><%= link "New Door", to: door_path(@conn, :new) %></span>
+<% end %>
+
+<%= if @metadata.before do %>
+  <span><%= link "Previous", to: user_path(@conn, :index, before: @metadata.before) %></span>
+<% end %>
+<%= if @metadata.after do %>
+  <span><%= link "Next", to: user_path(@conn, :index, after: @metadata.after) %></span>
+<% end %>
