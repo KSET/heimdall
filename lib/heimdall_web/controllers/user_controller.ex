@@ -27,8 +27,13 @@ defmodule HeimdallWeb.UserController do
   end
 
   def new(conn, _params) do
+    roles =
+      Account.list_roles()
+      |> Enum.map(&{&1.name, &1.id})
+
     changeset = Account.change_user(%User{})
-    render(conn, "new.html", changeset: changeset)
+
+    render(conn, "new.html", roles: roles, changeset: changeset)
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -65,8 +70,14 @@ defmodule HeimdallWeb.UserController do
 
   def edit(conn, %{"id" => id}) do
     user = Account.get_user!(id)
+
+    roles =
+      Account.list_roles()
+      |> Enum.map(&{&1.name, &1.id})
+
     changeset = Account.change_user(user)
-    render(conn, "edit.html", user: user, changeset: changeset)
+
+    render(conn, "edit.html", user: user, roles: roles, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
