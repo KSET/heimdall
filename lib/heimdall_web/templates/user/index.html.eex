@@ -33,8 +33,6 @@
   <span><%= link "New User", to: user_path(@conn, :new) %></span>
 <% end %>
 
-<script>console.log(<% raw Poison.encode!(@metadata) %>)</script>
-
 <%= if @metadata.before do %>
   <span><%= link "Previous", to: user_path(@conn, :index, before: @metadata.before) %></span>
 <% end %>
