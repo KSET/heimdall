@@ -72,6 +72,13 @@ defmodule HeimdallWeb.UserController do
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Account.get_user!(id)
 
+    user_params =
+      if(user_params["password"] && user_params["password"] == "") do
+        %{user_params | "password" => user.password}
+      else
+        user_params
+      end
+
     case Account.update_user(user, user_params) do
       {:ok, user} ->
         conn
