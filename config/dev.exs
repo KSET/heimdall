@@ -50,7 +50,7 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 config :heimdall, Heimdall.Repo,
-  adapter: Ecto.Adapters.Postgres,
+#  adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
   database: "heimdall_dev",

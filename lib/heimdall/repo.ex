@@ -1,5 +1,5 @@
 defmodule Heimdall.Repo do
-  use Ecto.Repo, otp_app: :heimdall
+  use Ecto.Repo, otp_app: :heimdall, adapter: Ecto.Adapters.Postgres
   use Paginator
 
   @doc """
