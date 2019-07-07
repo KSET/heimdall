@@ -44,6 +44,7 @@ defmodule HeimdallWeb.Router do
     pipe_through([:api, :auth])
 
     post("/equipment/doors/request-access", ApiController, :request_access)
+    post("/equipment/doors/door-event", ApiController, :door_event)
     get("/logs", ApiController, :logs)
     get("/logs/:user_code", ApiController, :logs_for_user)
   end

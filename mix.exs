@@ -56,7 +56,8 @@ defmodule Heimdall.Mixfile do
       {:argon2_elixir, "~> 2.0"},
       {:guardian, "~> 1.0"},
       {:plug, "~> 1.0"},
-      {:paginator, "~> 0.6"}
+      {:paginator, "~> 0.6"},
+      {:enum_type, "~> 1.0.0"}
     ]
   end
 

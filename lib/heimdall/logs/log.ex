@@ -1,5 +1,6 @@
 defmodule Heimdall.Log do
   use Ecto.Schema
+  use EnumType
   import Ecto.Changeset
   import Ecto.Query, warn: false
   alias Heimdall.Equipment.Door
@@ -7,8 +8,14 @@ defmodule Heimdall.Log do
   alias Heimdall.{Log, Repo, Account}
   alias Heimdall.Relations.DoorUser
 
+  defenum Type do
+    value(AccessRequest, "access_request")
+    value(DoorEvent, "door_event")
+  end
+
   schema "logs" do
     field(:access_granted, :boolean, default: false)
+    field(:type, Type)
 
     belongs_to(:user, User, foreign_key: :user_code, references: :code, type: :string)
     belongs_to(:door, Door, foreign_key: :door_code, references: :code, type: :string)
@@ -19,13 +26,15 @@ defmodule Heimdall.Log do
   @doc false
   def changeset(log, attrs) do
     log
-    |> cast(attrs, [:access_granted, :user_code, :door_code])
-    |> validate_required([:access_granted, :user_code, :door_code])
+    |> cast(attrs, [:access_granted, :user_code, :door_code, :type])
+    |> validate_required([:access_granted, :user_code, :door_code, :type])
+    |> Type.validate(:type)
   end
 
   @spec to_map(Log.t() | any()) :: map()
   def to_map(%Log{
         id: id,
+        type: type,
         user_code: user_code,
         user: user,
         door_code: door_code,
@@ -35,6 +44,7 @@ defmodule Heimdall.Log do
       }) do
     %{
       id: id,
+      type: type,
       user_code: user_code,
       user: User.to_map(user),
       door_code: door_code,
@@ -78,11 +88,19 @@ defmodule Heimdall.Log do
     )
   end
 
-  @spec add_attempt(%{door: integer(), success: boolean(), user: integer()}) ::
+  @spec add_attempt(
+          %{door: integer(), success: boolean(), type: String.t()},
+          String.t()
+        ) ::
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
-  def add_attempt(%{user: user_code, door: door_code, success: success}) do
+  def add_attempt(%{user: user_code, door: door_code, success: success} = data, type) do
     %Log{}
-    |> changeset(%{user_code: user_code, door_code: door_code, access_granted: success})
+    |> changeset(%{
+      user_code: user_code,
+      door_code: door_code,
+      access_granted: success,
+      type: type
+    })
     |> Repo.insert()
   end
 end

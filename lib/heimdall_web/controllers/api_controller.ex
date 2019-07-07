@@ -26,12 +26,38 @@ defmodule HeimdallWeb.ApiController do
       end
 
     data
-    |> Heimdall.Log.add_attempt()
+    |> Heimdall.Log.add_attempt(Heimdall.Log.Types.AccessRequest)
 
     conn
     |> render("request-access.json", data)
   end
 
+  def request_access(conn, params) do
+    conn
+    |> missing_params([:door, :user], Map.keys(params))
+  end
+
+  @spec door_event(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def door_event(conn, %{"door" => door, "opened" => open}) do
+    data = %{
+      door: to_string(door),
+      success: open,
+      user: ""
+    }
+
+    data
+    |> Heimdall.Log.add_attempt(Heimdall.Log.Types.DoorEvent)
+
+    conn
+    |> render("door-event.json", data)
+  end
+
+  def door_event(conn, params) do
+    conn
+    |> missing_params([:door, :opened], Map.keys(params))
+  end
+
+  @spec request_access(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def logs(conn, params) do
     %Paginator.Page{entries: logs, metadata: metadata} =
       from(
@@ -69,5 +95,27 @@ defmodule HeimdallWeb.ApiController do
 
     conn
     |> render("logs.json", %{logs: logs, metadata: metadata})
+  end
+
+  defp missing_params(conn, required_params, params) do
+    required =
+      required_params
+      |> Enum.map(&to_string(&1))
+
+    missing = required -- params
+
+    missing_string =
+      missing
+      |> Enum.join("', '")
+
+    conn
+    |> put_status(400)
+    |> json(%{
+      error: true,
+      message: "Missing parameters. Required parameters are: '#{missing_string}'",
+      required_params: required,
+      provided_params: params,
+      missing_params: missing
+    })
   end
 end
