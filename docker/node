@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+DOCKER_NAME="node" docker/.container "$@"

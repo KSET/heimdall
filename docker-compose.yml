@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+
+    elixir:
+        build:
+            context: .
+            dockerfile: .docker/elixir/Dockerfile
+        volumes:
+            - .:/heimdall
+        ports:
+            - '4000:4000'
+        env_file:
+            - .env
+        depends_on:
+            - db
+
+    db:
+        image: 'postgres:11'
+        restart: always
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            PGDATA: /var/lib/postgresql/data/pgdata
+        volumes:
+            - .data/postgres:/var/lib/postgresql/data
+
+    node:
+        image: 'node:12-alpine'
+        restart: never

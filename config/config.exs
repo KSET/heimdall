@@ -11,7 +11,7 @@ config :heimdall,
 
 # Configures the endpoint
 config :heimdall, HeimdallWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "localhost", port: System.get_env("PORT")],
   secret_key_base: "nArEene8nvLcOwV9aa/BdqKRzNbsqMT9b6+sU6OOD6ECvK6TZMYXroL9/dMVOSam",
   render_errors: [view: HeimdallWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Heimdall.PubSub, adapter: Phoenix.PubSub.PG2]

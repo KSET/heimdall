@@ -3,6 +3,8 @@
 /db
 /deps
 /*.ez
+/.mix
+/.hex
 
 # Generated on crash by the VM
 erl_crash.dump
@@ -26,4 +28,12 @@ npm-debug.log
 # variables.
 /config/*.secret.exs
 
+/var/
+!.gitignore
+
+/.data/*
+!/.data/**/.gitkeep
+
 .elixir_ls
+
+.env
