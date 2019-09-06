@@ -1,4 +1,5 @@
 ELIXIR_VENDOR := ./deps
+ENV := .env
 
 .PHONY: up dev down install npm-install build clean
 
@@ -23,5 +24,8 @@ deps-get:
 	docker/elixir mix local.hex --force
 	docker/elixir mix deps.get
 
-$(ELIXIR_VENDOR):
+$(ELIXIR_VENDOR): $(ENV)
 	$(MAKE) deps-get
+
+$(ENV):
+	cp .env.example .env
